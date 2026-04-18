@@ -163,8 +163,12 @@ def extract_row(cols, href=""):
         return None
 
     event      = cols[0].strip()
-    date_str   = cols[1].strip()
-    run_number = cols[2].strip()
+    raw_date = cols[1].strip()
+    try:
+        from datetime import datetime
+        date_str = datetime.strptime(raw_date, "%d/%m/%Y").strftime("%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        date_str = raw_date
     position   = cols[3].strip()
     raw_time   = cols[4].strip()
 

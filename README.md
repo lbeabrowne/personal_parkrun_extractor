@@ -5,8 +5,8 @@
 
 ### 💫 Key Info:
 - follow the steps at the top of the parkrun_extractor.py file to ensure you install the requirements, copy the cookies on your browser from the parkrun page and add a .env file to your folder containing your parkrun number and the cookie string
-- the file output called parkrun_results.csv should contain 7 columns with your parkrun results to date
-- columns are: Event | Date | Position | Finish Time | Age Grade | Course Personal Best | New Personal Best
+- the file output called parkrun_results.csv should contain 9 columns with your parkrun results to date
+- columns are: Event | Date | Position | Finish Time | Age Grade | Course Personal Best | New Personal Best | Latitude | Longitude
 - Course Personal Best is Yes if this time is faster than previous times at this event and New Personal Best is Yes if this time is faster than previous times at all events (No = not faster)
 
 ### 🍪 Why do I need to add cookies?
@@ -22,3 +22,18 @@ By copying your browser cookie and adding it to the `.env` file, you are giving 
 - ⚠️ Cookies expire after a period of time — if the script stops working, simply refresh your cookie from the browser and update your `.env` file
 
 > **Note:** Your cookie string is sensitive — treat it like a password. Do not share it or commit your `.env` file to a public repository like GitHub. The `.env` file should be kept local to your machine only.
+
+### 🌍 How does geocoding work?
+
+The script automatically converts each parkrun event name into a latitude and longitude coordinate, which are saved as extra columns in the CSV. This makes it easy to plot your runs on a map.
+
+Geocoding is done using the free [Nominatim](https://nominatim.openstreetmap.org/) service from OpenStreetMap — no API key required.
+
+To make geocoding as accurate as possible, the script extracts the country from each event's parkrun URL (e.g. `parkrun.dk` for Denmark, `parkrun.it` for Italy) and searches within that country first. If nothing is found, it falls back to a worldwide search.
+
+A few things to be aware of:
+
+- ✅ Each unique location is only geocoded once — repeated visits to the same park make just one request
+- ✅ Supports the current 23 parkrun countries
+- ⚠️ Nominatim has a rate limit of 1 request per second — the script handles this automatically so please do not remove the delay
+- ⚠️ Occasionally a location may not be found or may return an incorrect coordinate — you can manually correct these in the CSV if needed
